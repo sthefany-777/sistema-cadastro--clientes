@@ -1,225 +1,819 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+
+          content="width=device-width, initial-scale=1.0">
 
     <title>Sistema de Cadastro de Clientes</title>
 
     <style>
 
         * {
+
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+
             font-family: Arial, sans-serif;
+
         }
 
         body {
-            background-color: #f2f4f7;
+
+            margin: 0;
+
             padding: 30px 15px;
+
+            background-color: #f2f4f7;
+
             color: #333;
+
         }
 
         .container {
+
             max-width: 700px;
+
             margin: auto;
+
         }
 
         h1 {
+
             text-align: center;
+
             color: #222;
+
             margin-bottom: 10px;
+
         }
 
         .subtitulo {
+
             text-align: center;
+
             color: #666;
+
             margin-bottom: 25px;
+
         }
 
         .card {
+
             background-color: white;
+
             padding: 25px;
+
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+
             margin-bottom: 20px;
+
         }
 
         h2 {
+
+            margin-top: 0;
+
             margin-bottom: 20px;
-            color: #222;
+
         }
 
         label {
+
             display: block;
-            margin-bottom: 6px;
+
             font-weight: bold;
+
+            margin-bottom: 6px;
+
         }
 
         input {
+
             width: 100%;
+
             padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+
             margin-bottom: 15px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
             font-size: 16px;
+
         }
 
         input:focus {
+
             outline: none;
+
             border-color: #555;
+
         }
 
-        button {
+        .btn-principal {
+
             width: 100%;
+
             padding: 13px;
+
             border: none;
+
             border-radius: 8px;
+
             background-color: #222;
+
             color: white;
+
             font-size: 16px;
+
             font-weight: bold;
+
             cursor: pointer;
+
         }
 
-        button:hover {
+        .btn-principal:hover {
+
             background-color: #444;
+
         }
 
         ul {
+
             list-style: none;
+
+            padding: 0;
+
         }
 
         li {
+
             background-color: #f8f8f8;
+
             padding: 15px;
+
+            margin-bottom: 12px;
+
             border-radius: 8px;
-            margin-bottom: 10px;
+
             border-left: 4px solid #222;
+
+        }
+
+        .informacoes {
+
+            margin-bottom: 12px;
+
+            line-height: 1.6;
+
+        }
+
+        .botoes {
+
+            display: flex;
+
+            gap: 10px;
+
+        }
+
+        .btn-editar {
+
+            background-color: #555;
+
+            color: white;
+
+            border: none;
+
+            padding: 10px 15px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+        }
+
+        .btn-excluir {
+
+            background-color: #d9534f;
+
+            color: white;
+
+            border: none;
+
+            padding: 10px 15px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+        }
+
+        .btn-editar:hover {
+
+            background-color: #333;
+
+        }
+
+        .btn-excluir:hover {
+
+            background-color: #c9302c;
+
         }
 
         @media (max-width: 600px) {
+
             body {
+
                 padding: 20px 10px;
+
             }
 
             .card {
+
                 padding: 20px;
+
             }
 
             h1 {
+
                 font-size: 25px;
+
             }
+
+            .botoes {
+
+                flex-direction: column;
+
+            }
+
+            .btn-editar,
+
+            .btn-excluir {
+
+                width: 100%;
+
+            }
+
         }
+
     </style>
+
 </head>
 
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <h1>Sistema de Cadastro de Clientes</h1>
+    <h1>
 
-        <p class="subtitulo">
-            Cadastre e organize seus clientes
-        </p>
+        Sistema de Cadastro de Clientes
 
-        <div class="card">
+    </h1>
 
-            <h2>Cadastrar cliente</h2>
+    <p class="subtitulo">
 
-            <label>Nome:</label>
-            <input type="text" id="nome">
+        Cadastre e organize seus clientes
 
-            <label>Telefone:</label>
-            <input type="tel" id="telefone">
+    </p>
 
-            <label>E-mail:</label>
-            <input type="email" id="email">
+    <!-- CADASTRO -->
 
-            <button onclick="cadastrarCliente()">
-                Cadastrar
-            </button>
+    <div class="card">
 
-        </div>
+        <h2 id="titulo">
 
-        <div class="card">
+            Cadastrar cliente
 
-            <h2>Clientes cadastrados</h2>
+        </h2>
 
-            <ul id="listaClientes"></ul>
+        <label>
 
-        </div>
+            Nome:
+
+        </label>
+
+        <input
+
+            type="text"
+
+            id="nome"
+
+            placeholder="Digite o nome"
+
+        >
+
+        <label>
+
+            Telefone:
+
+        </label>
+
+        <input
+
+            type="tel"
+
+            id="telefone"
+
+            placeholder="Digite o telefone"
+
+        >
+
+        <label>
+
+            E-mail:
+
+        </label>
+
+        <input
+
+            type="email"
+
+            id="email"
+
+            placeholder="Digite o e-mail"
+
+        >
+
+        <button
+
+            class="btn-principal"
+
+            id="botao"
+
+            onclick="salvarCliente()"
+
+        >
+
+            Cadastrar
+
+        </button>
 
     </div>
 
-    <script>
+    <!-- CLIENTES -->
 
-        let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+    <div class="card">
 
-        function mostrarClientes() {
+        <h2>
 
-            const lista = document.getElementById("listaClientes");
+            Clientes cadastrados
 
-            lista.innerHTML = "";
+        </h2>
 
-            clientes.forEach(function(cliente) {
+        <ul id="listaClientes"></ul>
 
-                const item = document.createElement("li");
+    </div>
 
-                item.textContent =
-                    "Nome: " + cliente.nome +
-                    " | Telefone: " + cliente.telefone +
-                    " | E-mail: " + cliente.email;
+</div>
 
-                lista.appendChild(item);
+<script>
 
-            });
+    // Pega os clientes que já estão salvos
+
+    let clientes =
+
+        JSON.parse(
+
+            localStorage.getItem("clientes")
+
+        ) || [];
+
+    // Guarda o cliente que está sendo editado
+
+    let indiceEditando = -1;
+
+    // SALVAR CLIENTE
+
+    function salvarCliente() {
+
+        const nome =
+
+            document
+
+            .getElementById("nome")
+
+            .value
+
+            .trim();
+
+        const telefone =
+
+            document
+
+            .getElementById("telefone")
+
+            .value
+
+            .trim();
+
+        const email =
+
+            document
+
+            .getElementById("email")
+
+            .value
+
+            .trim();
+
+        // Verifica se os campos estão preenchidos
+
+        if (
+
+            nome === "" ||
+
+            telefone === "" ||
+
+            email === ""
+
+        ) {
+
+            alert(
+
+                "Preencha todos os campos!"
+
+            );
+
+            return;
+
         }
 
-        function cadastrarCliente() {
+        // Se estiver editando
 
-            const nome = document.getElementById("nome").value;
-            const telefone = document.getElementById("telefone").value;
-            const email = document.getElementById("email").value;
+        if (indiceEditando !== -1) {
 
-            if (nome === "" || telefone === "" || email === "") {
-
-                alert("Preencha todos os campos!");
-
-                return;
-            }
-
-            const cliente = {
+            clientes[indiceEditando] = {
 
                 nome: nome,
+
                 telefone: telefone,
+
                 email: email
 
             };
 
-            clientes.push(cliente);
+            alert(
 
-            localStorage.setItem(
-                "clientes",
-                JSON.stringify(clientes)
+                "Cliente editado com sucesso!"
+
             );
 
-            mostrarClientes();
+            indiceEditando = -1;
 
-            document.getElementById("nome").value = "";
-            document.getElementById("telefone").value = "";
-            document.getElementById("email").value = "";
+            document
 
-            alert("Cliente cadastrado com sucesso!");
+            .getElementById("titulo")
 
-    }
+            .textContent =
+
+                "Cadastrar cliente";
+
+            document
+
+            .getElementById("botao")
+
+            .textContent =
+
+                "Cadastrar";
+
+        }
+
+        // Se for um novo cliente
+
+        else {
+
+            clientes.push({
+
+                nome: nome,
+
+                telefone: telefone,
+
+                email: email
+
+            });
+
+            alert(
+
+                "Cliente cadastrado com sucesso!"
+
+            );
+
+        }
+
+        // Salva os clientes
+
+        localStorage.setItem(
+
+            "clientes",
+
+            JSON.stringify(clientes)
+
+        );
+
+        // Limpa os campos
+
+        limparCampos();
+
+        // Atualiza a lista
 
         mostrarClientes();
 
-     </script>
-    
+    }
+
+    // MOSTRAR CLIENTES
+
+    function mostrarClientes() {
+
+        const lista =
+
+            document
+
+            .getElementById("listaClientes");
+
+        lista.innerHTML = "";
+
+        clientes.forEach(
+
+            function(cliente, indice) {
+
+                const item =
+
+                    document.createElement("li");
+
+                // Informações
+
+                const informacoes =
+
+                    document.createElement("div");
+
+                informacoes.className =
+
+                    "informacoes";
+
+                informacoes.innerHTML =
+
+                    "<strong>Nome:</strong> "
+
+                    + cliente.nome
+
+                    + "<br>"
+
+                    + "<strong>Telefone:</strong> "
+
+                    + cliente.telefone
+
+                    + "<br>"
+
+                    + "<strong>E-mail:</strong> "
+
+                    + cliente.email;
+
+                // Área dos botões
+
+                const botoes =
+
+                    document.createElement("div");
+
+                botoes.className =
+
+                    "botoes";
+
+                // BOTÃO EDITAR
+
+                const botaoEditar =
+
+                    document.createElement("button");
+
+                botaoEditar.textContent =
+
+                    "✏️ Editar";
+
+                botaoEditar.className =
+
+                    "btn-editar";
+
+                botaoEditar.onclick =
+
+                    function() {
+
+                        editarCliente(indice);
+
+                    };
+
+                // BOTÃO EXCLUIR
+
+                const botaoExcluir =
+
+                    document.createElement("button");
+
+                botaoExcluir.textContent =
+
+                    "🗑️ Excluir";
+
+                botaoExcluir.className =
+
+                    "btn-excluir";
+
+                botaoExcluir.onclick =
+
+                    function() {
+
+                        excluirCliente(indice);
+
+                    };
+
+                // Coloca os botões na tela
+
+                botoes.appendChild(
+
+                    botaoEditar
+
+                );
+
+                botoes.appendChild(
+
+                    botaoExcluir
+
+                );
+
+                // Coloca informações e botões
+
+                item.appendChild(
+
+                    informacoes
+
+                );
+
+                item.appendChild(
+
+                    botoes
+
+                );
+
+                // Coloca o cliente na lista
+
+                lista.appendChild(
+
+                    item
+
+                );
+
+            }
+
+        );
+
+    }
+
+    // EDITAR
+
+    function editarCliente(indice) {
+
+        const cliente =
+
+            clientes[indice];
+
+        document
+
+        .getElementById("nome")
+
+        .value =
+
+            cliente.nome;
+
+        document
+
+        .getElementById("telefone")
+
+        .value =
+
+            cliente.telefone;
+
+        document
+
+        .getElementById("email")
+
+        .value =
+
+            cliente.email;
+
+        indiceEditando =
+
+            indice;
+
+        document
+
+        .getElementById("titulo")
+
+        .textContent =
+
+            "Editar cliente";
+
+        document
+
+        .getElementById("botao")
+
+        .textContent =
+
+            "Salvar alterações";
+
+        // Volta para o formulário
+
+        window.scrollTo({
+
+            top: 0,
+
+            behavior: "smooth"
+
+        });
+
+    }
+
+    // EXCLUIR
+
+    function excluirCliente(indice) {
+
+        const confirmar =
+
+            confirm(
+
+                "Deseja realmente excluir este cliente?"
+
+            );
+
+        if (!confirmar) {
+
+            return;
+
+        }
+
+        clientes.splice(
+
+            indice,
+
+            1
+
+        );
+
+        localStorage.setItem(
+
+            "clientes",
+
+            JSON.stringify(clientes)
+
+        );
+
+        mostrarClientes();
+
+        alert(
+
+            "Cliente excluído!"
+
+        );
+
+    }
+
+    // LIMPAR CAMPOS
+
+    function limparCampos() {
+
+        document
+
+        .getElementById("nome")
+
+        .value = "";
+
+        document
+
+        .getElementById("telefone")
+
+        .value = "";
+
+        document
+
+        .getElementById("email")
+
+        .value = "";
+
+    }
+
+    // Mostra os clientes quando o site abre
+
+    mostrarClientes();
+
+</script>
 
 </body>
+
 </html>
