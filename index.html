@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Cadastro de Clientes</title>
 </head>
+
 <body>
 
     <h1>Sistema de Cadastro de Clientes</h1>
@@ -12,21 +13,51 @@
     <h2>Cadastrar cliente</h2>
 
     <label>Nome:</label>
-    <input type="text">
+    <input type="text" id="nome">
 
     <br><br>
 
     <label>Telefone:</label>
-    <input type="tel">
+    <input type="tel" id="telefone">
 
     <br><br>
 
     <label>E-mail:</label>
-    <input type="email">
+    <input type="email" id="email">
 
     <br><br>
 
-    <button>Cadastrar</button>
+    <button onclick="cadastrarCliente()">Cadastrar</button>
+
+    <h2>Clientes cadastrados</h2>
+
+    <ul id="listaClientes"></ul>
+
+    <script>
+        function cadastrarCliente() {
+            const nome = document.getElementById("nome").value;
+            const telefone = document.getElementById("telefone").value;
+            const email = document.getElementById("email").value;
+
+            if (nome === "" || telefone === "" || email === "") {
+                alert("Preencha todos os campos!");
+                return;
+            }
+
+            const cliente = document.createElement("li");
+
+            cliente.textContent =
+                "Nome: " + nome +
+                " | Telefone: " + telefone +
+                " | E-mail: " + email;
+
+            document.getElementById("listaClientes").appendChild(cliente);
+
+            document.getElementById("nome").value = "";
+            document.getElementById("telefone").value = "";
+            document.getElementById("email").value = "";
+        }
+    </script>
 
 </body>
 </html>
