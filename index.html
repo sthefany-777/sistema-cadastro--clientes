@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sistema de Cadastro de Clientes</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .cadastrar {
+            width: 100%;
+            padding: 12px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        li {
+            background: #eee;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            list-style: none;
+        }
+
+        .editar {
+            background: #555;
+            color: white;
+            border: none;
+            padding: 8px;
+            margin-top: 10px;
+            margin-right: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .excluir {
+            background: red;
+            color: white;
+            border: none;
+            padding: 8px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>Sistema de Cadastro de Clientes</h1>
+
+
+    <div class="card">
+
+        <h2 id="titulo">Cadastrar cliente</h2>
+
+
+        <label>Nome:</label>
+
+        <input
+            type="text"
+            id="nome"
+            placeholder="Digite o nome"
+        >
+
+
+        <label>Telefone:</label>
+
+        <input
+            type="tel"
+            id="telefone"
+            placeholder="Digite o telefone"
+        >
+
+
+        <label>E-mail:</label>
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Digite o e-mail"
+        >
+
+
+        <button
+            class="cadastrar"
+            onclick="cadastrar()"
+        >
+            Cadastrar
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Clientes cadastrados</h2>
+
+
+        <input
+            type="text"
+            id="pesquisa"
+            placeholder="🔎 Pesquisar cliente..."
+            oninput="pesquisarClientes()"
+        >
+
+
+        <ul id="lista"></ul>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+let clientes =
+    JSON.parse(localStorage.getItem("clientes")) || [];
+
+
+let editando = -1;
+
+
+
+function cadastrar() {
+
+    let nome =
+        document.getElementById("nome").value;
+
+    let telefone =
+        document.getElementById("telefone").value;
+
+    let email =
+        document.getElementById("email").value;
+
+
+    if (
+        nome === "" ||
+        telefone === "" ||
+        email === ""
+    ) {
+
+        alert("Preencha todos os campos!");
+
+        return;
+    }
+
+
+    if (editando === -1) {
+
+        clientes.push({
+
+            nome: nome,
+            telefone: telefone,
+            email: email
+
+        });
+
+        alert("Cliente cadastrado com sucesso!");
+
+    } else {
+
+        clientes[editando] = {
+
+            nome: nome,
+            telefone: telefone,
+            email: email
+
+        };
+
+        editando = -1;
+
+
+        document.getElementById("titulo").textContent =
+            "Cadastrar cliente";
+
+
+        document.querySelector(".cadastrar").textContent =
+            "Cadastrar";
+
+
+        alert("Cliente editado com sucesso!");
+
+    }
+
+
+    salvar();
+
+    limpar();
+
+    mostrar();
+
+}
+
+
+
+function mostrar() {
+
+    let lista =
+        document.getElementById("lista");
+
+
+    lista.innerHTML = "";
+
+
+    clientes.forEach(function(cliente, indice) {
+
+        let item =
+            document.createElement("li");
+
+
+        item.innerHTML =
+            "<strong>Nome:</strong> " +
+            cliente.nome +
+            "<br>" +
+
+            "<strong>Telefone:</strong> " +
+            cliente.telefone +
+            "<br>" +
+
+            "<strong>E-mail:</strong> " +
+            cliente.email +
+            "<br>";
+
+
+        let botaoEditar =
+            document.createElement("button");
+
+
+        botaoEditar.textContent =
+            "✏️ Editar";
+
+
+        botaoEditar.className =
+            "editar";
+
+
+        botaoEditar.onclick =
+            function() {
+
+                editar(indice);
+
+            };
+
+
+        let botaoExcluir =
+            document.createElement("button");
+
+
+        botaoExcluir.textContent =
+            "🗑️ Excluir";
+
+
+        botaoExcluir.className =
+            "excluir";
+
+
+        botaoExcluir.onclick =
+            function() {
+
+                excluir(indice);
+
+            };
+
+
+        item.appendChild(botaoEditar);
+
+        item.appendChild(botaoExcluir);
+
+        lista.appendChild(item);
+
+    });
+
+}
+
+
+
+function editar(indice) {
+
+    document.getElementById("nome").value =
+        clientes[indice].nome;
+
+
+    document.getElementById("telefone").value =
+        clientes[indice].telefone;
+
+
+    document.getElementById("email").value =
+        clientes[indice].email;
+
+
+    editando = indice;
+
+
+    document.getElementById("titulo").textContent =
+        "Editar cliente";
+
+
+    document.querySelector(".cadastrar").textContent =
+        "Salvar alterações";
+
+
+    window.scrollTo(0, 0);
+
+}
+
+
+
+function excluir(indice) {
+
+    let confirmar =
+        confirm("Deseja excluir este cliente?");
+
+
+    if (confirmar) {
+
+        clientes.splice(indice, 1);
+
+        salvar();
+
+        mostrar();
+
+    }
+
+}
+
+
+
+function salvar() {
+
+    localStorage.setItem(
+        "clientes",
+        JSON.stringify(clientes)
+    );
+
+}
+
+
+
+function limpar() {
+
+    document.getElementById("nome").value = "";
+
+    document.getElementById("telefone").value = "";
+
+    document.getElementById("email").value = "";
+
+}
+
+
+
+function pesquisarClientes() {
+
+    let pesquisa =
+        document.getElementById("pesquisa").value.toLowerCase();
+
+
+    let lista =
+        document.getElementById("lista");
+
+
+    lista.innerHTML = "";
+
+
+    clientes.forEach(function(cliente, indice) {
+
+        let texto =
+            cliente.nome + " " +
+            cliente.telefone + " " +
+            cliente.email;
+
+
+        if (
+            texto
+                .toLowerCase()
+                .includes(pesquisa)
+        ) {
+
+            let item =
+                document.createElement("li");
+
+
+            item.innerHTML =
+                "<strong>Nome:</strong> " +
+                cliente.nome +
+                "<br>" +
+
+                "<strong>Telefone:</strong> " +
+                cliente.telefone +
+                "<br>" +
+
+                "<strong>E-mail:</strong> " +
+                cliente.email +
+                "<br>";
+
+
+            let botaoEditar =
+                document.createElement("button");
+
+
+            botaoEditar.textContent =
+                "✏️ Editar";
+
+
+            botaoEditar.className =
+                "editar";
+
+
+            botaoEditar.onclick =
+                function() {
+
+                    editar(indice);
+
+                };
+
+
+            let botaoExcluir =
+                document.createElement("button");
+
+
+            botaoExcluir.textContent =
+                "🗑️ Excluir";
+
+
+            botaoExcluir.className =
+                "excluir";
+
+
+            botaoExcluir.onclick =
+                function() {
+
+                    excluir(indice);
+
+                };
+
+
+            item.appendChild(botaoEditar);
+
+            item.appendChild(botaoExcluir);
+
+            lista.appendChild(item);
+
+        }
+
+    });
+
+}
+
+
+
+mostrar();
+
+
+</script>
+
+</body>
+
+</html>
