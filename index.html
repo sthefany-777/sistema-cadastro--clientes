@@ -18,6 +18,10 @@
             margin: auto;
         }
 
+        h1 {
+            text-align: center;
+        }
+
         .card {
             background: white;
             padding: 20px;
@@ -30,15 +34,21 @@
             padding: 10px;
             margin: 8px 0 15px;
             box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
         }
 
         .cadastrar {
             width: 100%;
-            padding: 12px;
             background: black;
             color: white;
-            border: none;
-            border-radius: 5px;
         }
 
         li {
@@ -52,20 +62,14 @@
         .editar {
             background: #555;
             color: white;
-            border: none;
-            padding: 8px;
             margin-top: 10px;
             margin-right: 5px;
-            border-radius: 5px;
         }
 
         .excluir {
             background: red;
             color: white;
-            border: none;
-            padding: 8px;
             margin-top: 10px;
-            border-radius: 5px;
         }
     </style>
 </head>
@@ -89,7 +93,7 @@
         <label>E-mail:</label>
         <input type="email" id="email">
 
-        <button class="cadastrar" onclick="cadastrar()">
+        <button class="cadastrar" onclick="cadastrarCliente()">
             Cadastrar
         </button>
 
@@ -99,30 +103,27 @@
 
         <h2>Clientes cadastrados</h2>
 
-<input
-    type="text"
-    id="pesquisa"
-    placeholder="🔎 Pesquisar cliente..."
-    oninput="pesquisarClientes()"
->
+        <input
+            type="text"
+            id="pesquisa"
+            placeholder="🔎 Pesquisar cliente..."
+            oninput="mostrarClientes()"
+        >
 
-<ul id="lista"></ul>
-
-        
+        <ul id="lista"></ul>
 
     </div>
 
 </div>
 
-
 <script>
 
 let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 
-let editando = -1;
+let clienteEditando = -1;
 
 
-function cadastrar() {
+function cadastrarCliente() {
 
     let nome = document.getElementById("nome").value;
     let telefone = document.getElementById("telefone").value;
@@ -137,7 +138,7 @@ function cadastrar() {
     }
 
 
-    if (editando === -1) {
+    if (clienteEditando === -1) {
 
         clientes.push({
             nome: nome,
@@ -145,17 +146,17 @@ function cadastrar() {
             email: email
         });
 
-        alert("Cliente cadastrado!");
+        alert("Cliente cadastrado com sucesso!");
 
     } else {
 
-        clientes[editando] = {
+        clientes[clienteEditando] = {
             nome: nome,
             telefone: telefone,
             email: email
         };
 
-        editando = -1;
+        clienteEditando = -1;
 
         document.getElementById("titulo").textContent =
             "Cadastrar cliente";
@@ -163,28 +164,46 @@ function cadastrar() {
         document.querySelector(".cadastrar").textContent =
             "Cadastrar";
 
-        alert("Cliente editado!");
-
+        alert("Cliente editado com sucesso!");
     }
 
 
-    salvar();
+    localStorage.setItem(
+        "clientes",
+        JSON.stringify(clientes)
+    );
 
-    limpar();
 
-    mostrar();
+    limparCampos();
 
+    mostrarClientes();
 }
 
 
-function mostrar() {
+function mostrarClientes() {
 
     let lista = document.getElementById("lista");
+
+    let pesquisa =
+        document.getElementById("pesquisa").value.toLowerCase();
+
 
     lista.innerHTML = "";
 
 
     clientes.forEach(function(cliente, indice) {
+
+        let dados =
+            cliente.nome + " " +
+            cliente.telefone + " " +
+            cliente.email;
+
+
+        if (!dados.toLowerCase().includes(pesquisa)) {
+
+            return;
+        }
+
 
         let item = document.createElement("li");
 
@@ -198,48 +217,43 @@ function mostrar() {
             "<br>";
 
 
-        let botaoEditar =
-            document.createElement("button");
+        let editar = document.createElement("button");
 
-        botaoEditar.textContent = "✏️ Editar";
+        editar.textContent = "✏️ Editar";
 
-        botaoEditar.className = "editar";
+        editar.className = "editar";
 
+        editar.onclick = function() {
 
-        botaoEditar.onclick = function() {
-
-            editar(indice);
+            editarCliente(indice);
 
         };
 
 
-        let botaoExcluir =
-            document.createElement("button");
+        let excluir = document.createElement("button");
 
-        botaoExcluir.textContent = "🗑️ Excluir";
+        excluir.textContent = "🗑️ Excluir";
 
-        botaoExcluir.className = "excluir";
+        excluir.className = "excluir";
 
+        excluir.onclick = function() {
 
-        botaoExcluir.onclick = function() {
-
-            excluir(indice);
+            excluirCliente(indice);
 
         };
 
 
-        item.appendChild(botaoEditar);
+        item.appendChild(editar);
 
-        item.appendChild(botaoExcluir);
+        item.appendChild(excluir);
 
         lista.appendChild(item);
 
     });
-
 }
 
 
-function editar(indice) {
+function editarCliente(indice) {
 
     document.getElementById("nome").value =
         clientes[indice].nome;
@@ -251,146 +265,48 @@ function editar(indice) {
         clientes[indice].email;
 
 
-    editando = indice;
+    clienteEditando = indice;
 
 
     document.getElementById("titulo").textContent =
         "Editar cliente";
+
 
     document.querySelector(".cadastrar").textContent =
         "Salvar alterações";
 
 
     window.scrollTo(0, 0);
-
 }
 
 
-function excluir(indice) {
+function excluirCliente(indice) {
 
-    let confirmar =
-        confirm("Deseja excluir este cliente?");
-
-
-    if (confirmar) {
+    if (confirm("Deseja excluir este cliente?")) {
 
         clientes.splice(indice, 1);
 
-        salvar();
+        localStorage.setItem(
+            "clientes",
+            JSON.stringify(clientes)
+        );
 
-        mostrar();
-
+        mostrarClientes();
     }
-
 }
 
 
-function salvar() {
-
-    localStorage.setItem(
-        "clientes",
-        JSON.stringify(clientes)
-    );
-
-}
-
-
-function limpar() {
+function limparCampos() {
 
     document.getElementById("nome").value = "";
 
     document.getElementById("telefone").value = "";
 
     document.getElementById("email").value = "";
-function pesquisarClientes() }
-
-    let pesquisa = document
-        .getElementById("pesquisa")
-        .value
-        .toLowerCase();
-
-    let lista = document
-        .getElementById("lista");
-
-    lista.innerHTML = "";
-
-    clientes.forEach(function(cliente, indice) {
-
-        let texto =
-            cliente.nome + " " +
-            cliente.telefone + " " +
-            cliente.email;
-
-        if (texto.toLowerCase().includes(pesquisa)) {
-
-            let item =
-                document.createElement("li");
-
-            item.innerHTML =
-                "<strong>Nome:</strong> " +
-                cliente.nome +
-                "<br>" +
-
-                "<strong>Telefone:</strong> " +
-                cliente.telefone +
-                "<br>" +
-
-                "<strong>E-mail:</strong> " +
-                cliente.email +
-                "<br>";
-
-
-            let botaoEditar =
-                document.createElement("button");
-
-            botaoEditar.textContent =
-                "✏️ Editar";
-
-            botaoEditar.className =
-                "editar";
-
-
-            botaoEditar.onclick =
-                function() {
-
-                    editar(indice);
-
-                };
-
-
-            let botaoExcluir =
-                document.createElement("button");
-
-            botaoExcluir.textContent =
-                "🗑️ Excluir";
-
-            botaoExcluir.className =
-                "excluir";
-
-
-            botaoExcluir.onclick =
-                function() {
-
-                    excluir(indice);
-
-                };
-
-
-            item.appendChild(botaoEditar);
-
-            item.appendChild(botaoExcluir);
-
-            lista.appendChild(item);
-
-        }
-
-    });
-
 }
 
 
-
-mostrar();
+mostrarClientes();
 
 </script>
 
