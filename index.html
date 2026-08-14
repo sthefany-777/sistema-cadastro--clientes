@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sistema de Cadastro de Clientes</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 7px 0 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 16px;
+        }
+
+        button {
+            border: none;
+            border-radius: 7px;
+            padding: 11px 15px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .cadastrar {
+            width: 100%;
+            background: black;
+            color: white;
+            padding: 13px;
+        }
+
+        .exportar {
+            width: 100%;
+            background: #222;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .limpar {
+            background: #ddd;
+            margin-bottom: 15px;
+        }
+
+        li {
+            list-style: none;
+            background: #eee;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+        }
+
+        .editar {
+            background: #555;
+            color: white;
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+
+        .excluir {
+            background: #d00000;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .data {
+            color: #666;
+            margin-top: 8px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Sistema de Cadastro de Clientes</h1>
+
+
+    <div class="card">
+
+        <h2 id="titulo">
+            Cadastrar cliente
+        </h2>
+
+
+        <label>Nome:</label>
+
+        <input
+            type="text"
+            id="nome"
+            placeholder="Digite o nome"
+        >
+
+
+        <label>Telefone:</label>
+
+        <input
+            type="tel"
+            id="telefone"
+            placeholder="Digite o telefone"
+        >
+
+
+        <label>E-mail:</label>
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Digite o e-mail"
+        >
+
+
+        <button
+            class="cadastrar"
+            onclick="cadastrar()">
+
+            Cadastrar
+
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Clientes cadastrados</h2>
+
+
+        <button
+            class="exportar"
+            onclick="exportar()">
+
+            Exportar clientes
+
+        </button>
+
+
+        <input
+            type="text"
+            id="pesquisa"
+            placeholder="Pesquisar cliente..."
+            oninput="mostrar()"
+        >
+
+
+        <button
+            class="limpar"
+            onclick="limparPesquisa()">
+
+            Limpar pesquisa
+
+        </button>
+
+
+        <ul id="lista"></ul>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+let clientes =
+    JSON.parse(
+        localStorage.getItem("clientes")
+    ) || [];
+
+
+let editando = -1;
+
+
+
+function cadastrar() {
+
+    let nome =
+        document.getElementById("nome")
+        .value
+        .trim();
+
+
+    let telefone =
+        document.getElementById("telefone")
+        .value
+        .trim();
+
+
+    let email =
+        document.getElementById("email")
+        .value
+        .trim();
+
+
+    if (
+        nome === "" ||
+        telefone === "" ||
+        email === ""
+    ) {
+
+        alert("Preencha todos os campos!");
+
+        return;
+
+    }
+
+
+    if (editando === -1) {
+
+        clientes.push({
+
+            nome: nome,
+
+            telefone: telefone,
+
+            email: email,
+
+            data:
+                new Date()
+                .toLocaleDateString("pt-BR")
+
+        });
+
+
+        alert("Cliente cadastrado!");
+
+    }
+
+    else {
+
+        clientes[editando].nome = nome;
+
+        clientes[editando].telefone = telefone;
+
+        clientes[editando].email = email;
+
+
+        editando = -1;
+
+
+        document.getElementById("titulo")
+            .textContent =
+            "Cadastrar cliente";
+
+
+        document.querySelector(".cadastrar")
+            .textContent =
+            "Cadastrar";
+
+
+        alert("Cliente editado!");
+
+    }
+
+
+    salvar();
+
+    limparCampos();
+
+    mostrar();
+
+}
+
+
+
+function mostrar() {
+
+    let lista =
+        document.getElementById("lista");
+
+
+    let pesquisa =
+        document.getElementById("pesquisa")
+        .value
+        .toLowerCase();
+
+
+    lista.innerHTML = "";
+
+
+    clientes.forEach(
+        function(cliente, indice) {
+
+
+        let texto =
+            cliente.nome + " " +
+            cliente.telefone + " " +
+            cliente.email;
+
+
+        if (
+            !texto
+            .toLowerCase()
+            .includes(pesquisa)
+        ) {
+
+            return;
+
+        }
+
+
+        let item =
+            document.createElement("li");
+
+
+        item.innerHTML =
+
+            "<strong>Nome:</strong> " +
+            cliente.nome +
+
+            "<br>" +
+
+            "<strong>Telefone:</strong> " +
+            cliente.telefone +
+
+            "<br>" +
+
+            "<strong>E-mail:</strong> " +
+            cliente.email +
+
+            "<br>" +
+
+            "<div class='data'>" +
+            "Data de cadastro: " +
+            cliente.data +
+            "</div>";
+
+
+        let editar =
+            document.createElement("button");
+
+
+        editar.textContent =
+            "Editar";
+
+
+        editar.className =
+            "editar";
+
+
+        editar.onclick =
+            function() {
+
+                editarCliente(indice);
+
+            };
+
+
+        let excluir =
+            document.createElement("button");
+
+
+        excluir.textContent =
+            "Excluir";
+
+
+        excluir.className =
+            "excluir";
+
+
+        excluir.onclick =
+            function() {
+
+                excluirCliente(indice);
+
+            };
+
+
+        item.appendChild(editar);
+
+        item.appendChild(excluir);
+
+        lista.appendChild(item);
+
+    });
+
+}
+
+
+
+function editarCliente(indice) {
+
+    document.getElementById("nome")
+        .value =
+        clientes[indice].nome;
+
+
+    document.getElementById("telefone")
+        .value =
+        clientes[indice].telefone;
+
+
+    document.getElementById("email")
+        .value =
+        clientes[indice].email;
+
+
+    editando = indice;
+
+
+    document.getElementById("titulo")
+        .textContent =
+        "Editar cliente";
+
+
+    document.querySelector(".cadastrar")
+        .textContent =
+        "Salvar alterações";
+
+
+    window.scrollTo(0, 0);
+
+}
+
+
+
+function excluirCliente(indice) {
+
+    let confirmar =
+        confirm(
+            "Deseja excluir este cliente?"
+        );
+
+
+    if (confirmar) {
+
+        clientes.splice(indice, 1);
+
+        salvar();
+
+        mostrar();
+
+    }
+
+}
+
+
+
+function salvar() {
+
+    localStorage.setItem(
+        "clientes",
+        JSON.stringify(clientes)
+    );
+
+}
+
+
+
+function limparCampos() {
+
+    document.getElementById("nome")
+        .value = "";
+
+
+    document.getElementById("telefone")
+        .value = "";
+
+
+    document.getElementById("email")
+        .value = "";
+
+}
+
+
+
+function limparPesquisa() {
+
+    document.getElementById("pesquisa")
+        .value = "";
+
+    mostrar();
+
+}
+
+
+
+/* TESTE DO BOTÃO EXPORTAR */
+
+function exportar() {
+
+    alert(
+        "O botão Exportar está funcionando!"
+    );
+
+}
+
+
+
+mostrar();
+
+
+</script>
+
+</body>
+
+</html>
