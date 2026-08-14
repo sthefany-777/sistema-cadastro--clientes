@@ -99,7 +99,16 @@
 
         <h2>Clientes cadastrados</h2>
 
-        <ul id="lista"></ul>
+<input
+    type="text"
+    id="pesquisa"
+    placeholder="🔎 Pesquisar cliente..."
+    oninput="pesquisarClientes()"
+>
+
+<ul id="lista"></ul>
+
+        
 
     </div>
 
@@ -293,8 +302,92 @@ function limpar() {
     document.getElementById("telefone").value = "";
 
     document.getElementById("email").value = "";
+function pesquisarClientes() }
+
+    let pesquisa = document
+        .getElementById("pesquisa")
+        .value
+        .toLowerCase();
+
+    let lista = document
+        .getElementById("lista");
+
+    lista.innerHTML = "";
+
+    clientes.forEach(function(cliente, indice) {
+
+        let texto =
+            cliente.nome + " " +
+            cliente.telefone + " " +
+            cliente.email;
+
+        if (texto.toLowerCase().includes(pesquisa)) {
+
+            let item =
+                document.createElement("li");
+
+            item.innerHTML =
+                "<strong>Nome:</strong> " +
+                cliente.nome +
+                "<br>" +
+
+                "<strong>Telefone:</strong> " +
+                cliente.telefone +
+                "<br>" +
+
+                "<strong>E-mail:</strong> " +
+                cliente.email +
+                "<br>";
+
+
+            let botaoEditar =
+                document.createElement("button");
+
+            botaoEditar.textContent =
+                "✏️ Editar";
+
+            botaoEditar.className =
+                "editar";
+
+
+            botaoEditar.onclick =
+                function() {
+
+                    editar(indice);
+
+                };
+
+
+            let botaoExcluir =
+                document.createElement("button");
+
+            botaoExcluir.textContent =
+                "🗑️ Excluir";
+
+            botaoExcluir.className =
+                "excluir";
+
+
+            botaoExcluir.onclick =
+                function() {
+
+                    excluir(indice);
+
+                };
+
+
+            item.appendChild(botaoEditar);
+
+            item.appendChild(botaoExcluir);
+
+            lista.appendChild(item);
+
+        }
+
+    });
 
 }
+
 
 
 mostrar();
